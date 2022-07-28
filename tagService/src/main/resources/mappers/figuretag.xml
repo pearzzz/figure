@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.red.mapper.FigureTagMapper">
+
+    <insert id="insertfiguretag" parameterType="com.red.entity.FigureTag">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into figuretag(tagname,tagdesc,jarpath,cmd,createTime,status)
+        value(#{tagname},#{tagdesc},#{jarpath},#{cmd},#{createTime},#{status})
+    </insert>
+
+    <update id="updatefiguretag" parameterType="com.red.entity.FigureTag">
+        update figuretag
+        set tagname=#{tagname},
+            tagdesc=#{tagdesc},
+            jarpath=#{jarpath},
+            cmd=#{cmd},
+            updateTime=#{updateTime}
+        where id = #{id}
+    </update>
+
+    <update id="updateStatus" parameterType="com.red.entity.FigureTag">
+        update figuretag
+        set status=#{status},
+            updateTime=#{updateTime}
+        where id = #{id}
+    </update>
+
+    <select id="findBytagid" parameterType="com.red.entity.FigureTag" resultType="com.red.entity.FigureTag">
+        select *
+        from figuretag
+        where id = #{id}
+    </select>
+
+    <select id="querytagbyvo" parameterType="com.red.vo.FigureTagVo" resultType="com.red.entity.FigureTag">
+        select * from figuretag
+        <where>
+            <include refid="consutoql"></include>
+        </where>
+    </select>
+    <sql id="consutoql">
+        <if test="figureTagConditon != null">
+            <if test="figureTagConditon.tagname!=null and figureTagConditon.tagname!=''">
+                and tagname like "%${figureTagConditon.tagname}%"
+            </if>
+            <if test="figureTagConditon.tagdesc!=null and figureTagConditon.tagdesc!=''">
+                and tagdesc like "%${figureTagConditon.tagdesc}%"
+            </if>
+            <if test="figureTagConditon.status!=-1">
+                and status = ${figureTagConditon.status}
+            </if>
+        </if>
+    </sql>
+</mapper>
+
